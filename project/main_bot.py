@@ -7,6 +7,8 @@ import os
 import json
 
 from requests.compat import urljoin
+from utils import *
+from dialogue_manager import DialogueManager
 
 
 class BotHandler(object):
@@ -84,8 +86,10 @@ def main():
     # This is the point where you plug it into the Telegram bot. 
     # Do not forget to import all needed dependencies when you do so.
     
-    simple_manager = SimpleDialogueManager()
-    bot = BotHandler(token, simple_manager)
+    #simple_manager = SimpleDialogueManager()
+    advanced_manager = DialogueManager(RESOURCE_PATH)
+    advanced_manager.create_chitchat_bot()
+    bot = BotHandler(token, advanced_manager)
     
     ###############################################################
 

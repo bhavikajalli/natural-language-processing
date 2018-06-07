@@ -2,6 +2,7 @@ import nltk
 import pickle
 import re
 import numpy as np
+import csv
 
 nltk.download('stopwords')
 from nltk.corpus import stopwords
@@ -12,7 +13,7 @@ RESOURCE_PATH = {
     'TAG_CLASSIFIER': 'tag_classifier.pkl',
     'TFIDF_VECTORIZER': 'tfidf_vectorizer.pkl',
     'THREAD_EMBEDDINGS_FOLDER': 'thread_embeddings_by_tags',
-    'WORD_EMBEDDINGS': 'word_embeddings.tsv',
+    'WORD_EMBEDDINGS': 'data/word_embeddings.tsv',
 }
 
 
@@ -49,8 +50,17 @@ def load_embeddings(embeddings_path):
     ########################
     #### YOUR CODE HERE ####
     ########################
+    embeddings_dict = {}
+    with open(embeddings_path) as f:
+        for line in f:
+            line = line.strip().split("\t")
+            token = line[0]
+            embedding = line[1:]
+            embedding = np.asarray(embedding).astype(np.float32)
+            embeddings_dict[token] = embedding
+    return embeddings_dict,len(line)-1
 
-        pass 
+
 
 def question_to_vec(question, embeddings, dim):
     """Transforms a string to an embedding by averaging word embeddings."""
@@ -60,8 +70,20 @@ def question_to_vec(question, embeddings, dim):
     ########################
     #### YOUR CODE HERE ####
     ########################
+    sentence_embedding = np.zeros((dim,))
+    if question == "":
+        return sentence_embedding
+    count = 0
+    words = question.strip().split(" ")
+    for word in words:
+        if word in embeddings:
+            sentence_embedding += embeddings[word]
+            count +=1
+    if count >1:
+        sentence_embedding = sentence_embedding / count
+    return sentence_embedding
 
-        pass
+
 
 
 def unpickle_file(filename):
